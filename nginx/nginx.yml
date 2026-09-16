@@ -1,8 +1,8 @@
-# Docker-Compose-Datei für NGINX (https://hub.docker.com/_/nginx)
+# Docker-Compose-Datei für NGINX
 services:
-nginx:
-image: nginx:latest
-container_name: nginx
-ports:
-- "8080:80"
-restart: unless-stopped
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - "8080:80"
+    restart: unless-stopped
