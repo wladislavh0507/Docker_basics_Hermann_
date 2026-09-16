@@ -1,7 +1,7 @@
 services:
   pihole:
-    container_name: pihole
     image: pihole/pihole:latest
+    container_name: pihole
     ports:
       - "53:53/tcp"
       - "53:53/udp"
@@ -10,8 +10,8 @@ services:
     environment:
       TZ: Europe/Berlin
     volumes:
-      - ./etc-pihole:/etc/pihole
-      - ./etc-dnsmasq.d:/etc/dnsmasq.d
+      - ./pihole/etc-pihole:/etc/pihole
+      - ./pihole/etc-dnsmasq.d:/etc/dnsmasq.d
     cap_add:
       - NET_ADMIN
     restart: unless-stopped
@@ -23,7 +23,7 @@ services:
       - "9000:9000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - ./portainer_data:/data
+      - ./portainer/portainer_data:/data
     restart: always
 
   watchtower:
@@ -38,4 +38,6 @@ services:
     container_name: nginx
     ports:
       - "8080:80"
+    volumes:
+      - ./nginx:/usr/share/nginx/html
     restart: unless-stopped
