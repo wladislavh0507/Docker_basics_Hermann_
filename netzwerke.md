@@ -212,3 +212,62 @@ Docker Compose erleichtert die Kommunikation zwischen Containern durch automatis
 - [Docker Docs: Services und network_mode](https://docs.docker.com/reference/compose-file/services/#network_mode)
 - [Docker Docs: docker compose stop](https://docs.docker.com/reference/cli/docker/compose/stop/)
 - [Docker Docs: docker compose down](https://docs.docker.com/reference/cli/docker/compose/down/)
+
+## Schritt 2: Praxistest des Netzwerks
+
+### Überprüfung der Container und des Netzwerks
+
+Die vier Services **Pi-hole**, **Portainer**, **Watchtower** und **NGINX** wurden in einer gemeinsamen Compose-Datei zusammengeführt.
+
+Für die Container wurde das benutzerdefinierte Netzwerk **lab_net** mit dem Netzwerktreiber **bridge** erstellt.
+
+```yaml
+networks:
+  lab_net:
+    name: lab_net
+    driver: bridge
+```
+
+Die Überprüfung erfolgte mit folgendem Befehl:
+
+```bash
+docker network inspect lab_net
+```
+
+Dabei wurde festgestellt, dass folgende Container erfolgreich mit **lab_net** verbunden waren:
+
+- nginx
+- pihole
+- portainer
+
+Docker hat den Containern automatisch IP-Adressen zugewiesen:
+
+| Container | IP-Adresse |
+|------------|------------|
+| nginx | 172.24.0.3 |
+| pihole | 172.24.0.4 |
+| portainer | 172.24.0.5 |
+
+Es wurden keine statischen IP-Adressen verwendet.
+
+### Kommunikation über Servicenamen
+
+Durch das gemeinsame Netzwerk können sich die Container über ihre Servicenamen ansprechen:
+
+- `nginx`
+- `pihole`
+- `portainer`
+- `watchtower`
+
+Die Namensauflösung erfolgt automatisch über den internen DNS-Dienst von Docker. Dadurch müssen keine IP-Adressen manuell konfiguriert werden.
+
+### Aufgetretene Probleme
+
+Während der Einrichtung traten mehrere Fehler auf:
+
+- YAML-Syntaxfehler durch fehlerhafte Einrückungen
+- Fehler durch kopierte HTML-Tags in der Compose-Datei
+- Namenskonflikt mit einem bereits vorhandenen NGINX-Container
+- Netzwerkfehler bei der Erstellung des Netzwerks `lab_net`
+
+Diese Probleme konnten durch die Korrektur der Compose-Datei und das Entfernen alter Container behoben werden.
