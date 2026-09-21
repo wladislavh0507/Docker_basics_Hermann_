@@ -15,6 +15,8 @@ services:
     cap_add:
       - NET_ADMIN
     restart: unless-stopped
+    networks:
+      - lab_net
 
   portainer:
     image: portainer/portainer-ce
@@ -25,6 +27,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./portainer/portainer_data:/data
     restart: always
+    networks:
+      - lab_net
 
   watchtower:
     image: containrrr/watchtower
@@ -32,6 +36,8 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
+    networks:
+      - lab_net
 
   nginx:
     image: nginx:latest
@@ -41,3 +47,9 @@ services:
     volumes:
       - ./nginx:/usr/share/nginx/html
     restart: unless-stopped
+    networks:
+      - lab_net
+
+networks:
+  lab_net:
+    driver: bridge
